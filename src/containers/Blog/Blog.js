@@ -18,13 +18,19 @@ class Blog extends Component {
                 throw new Error('There was a problem to connect to API');
             }
         })
-            .then(posts => this.setState({posts}))
+            .then(data => {
+                const posts = data.slice(0, 4);
+                const updatedPosts = posts.map(post => {
+                        return {...post, author: "Yurniel"};
+                    });
+                this.setState({posts: updatedPosts});
+            })
             .catch(e => console.log(e));
     }
 
     render () {
         const posts = this.state.posts.map(post => {
-            return <Post key={post.id} title={post.title} />;
+            return <Post key={post.id} title={post.title} author={post.author} />;
         });
 
         return (
