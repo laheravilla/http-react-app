@@ -6,6 +6,10 @@ import NewPost from '../../components/NewPost/NewPost';
 import './Blog.css';
 
 class Blog extends Component {
+    state = {
+        posts: []
+    }
+
     componentDidMount() {
         fetch('http://jsonplaceholder.typicode.com/posts').then(response => {
             if (response.ok) {
@@ -14,19 +18,19 @@ class Blog extends Component {
                 throw new Error('There was a problem to connect to API');
             }
         })
-            .then(data => {
-                console.log(data);
-            })
+            .then(posts => this.setState({posts}))
             .catch(e => console.log(e));
     }
 
     render () {
+        const posts = this.state.posts.map(post => {
+            return <Post key={post.id} title={post.title} />;
+        });
+
         return (
             <div>
                 <section className="Posts">
-                    <Post />
-                    <Post />
-                    <Post />
+                    {posts}
                 </section>
                 <section>
                     <FullPost />
