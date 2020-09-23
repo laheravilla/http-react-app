@@ -11,22 +11,14 @@ class Blog extends Component {
         selectedPostId: null
     }
 
-    componentDidMount() {
-        fetch('http://jsonplaceholder.typicode.com/posts').then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('There was a problem to connect to API');
-            }
-        })
-            .then(data => {
-                const posts = data.slice(0, 4);
-                const updatedPosts = posts.map(post => {
-                        return {...post, author: "Yurniel"};
-                    });
-                this.setState({posts: updatedPosts});
-            })
-            .catch(e => console.log(e));
+    async componentDidMount() {
+        const response = await fetch('http://jsonplaceholder.typicode.com/posts');
+        const data = await response.json();
+        const posts = data.slice(0, 4);
+        const updatedPosts = posts.map(post => {
+            return {...post, author: "Yurniel"};
+        });
+        this.setState({posts: updatedPosts});
     }
 
     postSelectedHandler = (id) => this.setState({selectedPostId: id});

@@ -7,17 +7,21 @@ class FullPost extends Component {
         post: null
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    async componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.id) {
             // To avoid the infinite loop
             if (!this.state.post || (this.state.post && this.state.post.id !== this.props.id)) {
-                fetch(`http://jsonplaceholder.typicode.com/posts/${this.props.id}`)
-                    .then(response => response.json())
-                    .then(post => this.setState({post}))
-                    .catch(e => console.log(e));
+                const response = await fetch(`http://jsonplaceholder.typicode.com/posts/${this.props.id}`);
+                const post = await response.json();
+                this.setState({post});
             }
         }
     }
+
+    deletePostHandler = async () => {
+        const response = await fetch(`http://jsonplaceholder.typicode.com/posts/${this.props.id}`, { method: "DELETE"});
+        await response.json();
+    };
 
     render () {
         let post = <p style={{textAlign: "center"}}>Please select a Post!</p>;
@@ -30,7 +34,7 @@ class FullPost extends Component {
                     <h1>{this.state.post.title}</h1>
                     <p>{this.state.post.body}</p>
                     <div className="Edit">
-                        <button className="Delete">Delete</button>
+                        <button onClick={this.deletePostHandler} className="Delete">Delete</button>
                     </div>
                 </div>
             );
