@@ -8,30 +8,40 @@ import './Blog.css';
 class Blog extends Component {
     state = {
         posts: [],
-        selectedPostId: null
+        selectedPostId: null,
+        error: false
     }
 
     async componentDidMount() {
-        const response = await fetch('http://jsonplaceholder.typicode.com/posts');
-        const data = await response.json();
-        const posts = data.slice(0, 4);
-        const updatedPosts = posts.map(post => {
-            return {...post, author: "Yurniel"};
-        });
-        this.setState({posts: updatedPosts});
+        try {
+            const response = await fetch('http://jsonplaceholder.typicode.com/posts');
+            const data = await response.json();
+            const posts = data.slice(0, 4);
+            const updatedPosts = posts.map(post => {
+                return {...post, author: "Yurniel"};
+            });
+            this.setState({posts: updatedPosts});
+        } catch (e) {
+            this.setState({error: true});
+            console.error(`ERROR: ${e}`);
+        }
     }
 
     postSelectedHandler = (id) => this.setState({selectedPostId: id});
 
     render () {
-        const posts = this.state.posts.map(post => {
-            return <Post
-                key={post.id}
-                title={post.title}
-                author={post.author}
-                clicked={() => this.postSelectedHandler(post.id)}
-            />;
-        });
+        let posts = <p style={{textAlign: 'center'}}>Something went wrong!</p>;
+
+        if (!this.state.error) {
+            posts = this.state.posts.map(post => {
+                return <Post
+                    key={post.id}
+                    title={post.title}
+                    author={post.author}
+                    clicked={() => this.postSelectedHandler(post.id)}
+                />;
+            });
+        }
 
         return (
             <div>

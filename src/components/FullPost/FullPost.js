@@ -11,16 +11,23 @@ class FullPost extends Component {
         if (this.props.id) {
             // To avoid the infinite loop
             if (!this.state.post || (this.state.post && this.state.post.id !== this.props.id)) {
-                const response = await fetch(`http://jsonplaceholder.typicode.com/posts/${this.props.id}`);
-                const post = await response.json();
-                this.setState({post});
+                try {
+                    const response = await fetch(`http://jsonplaceholder.typicode.com/posts/${this.props.id}`);
+                    const post = await response.json();
+                    this.setState({post});
+                } catch (e) {
+                    console.error(`ERROR: ${e}`)
+                }
             }
         }
     }
 
     deletePostHandler = async () => {
-        const response = await fetch(`http://jsonplaceholder.typicode.com/posts/${this.props.id}`, { method: "DELETE"});
-        await response.json();
+        try {
+            await (await fetch(`http://jsonplaceholder.typicode.com/posts/${this.props.id}`, { method: "DELETE"})).json();
+        } catch (e) {
+            console.error(`ERROR: ${e}`)
+        }
     };
 
     render () {
