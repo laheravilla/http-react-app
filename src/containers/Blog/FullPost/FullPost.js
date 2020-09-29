@@ -7,12 +7,12 @@ class FullPost extends Component {
         post: null
     }
 
-    async componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.id) {
+    async componentDidMount() {
+        if (this.props.match.params.id) {
             // To avoid the infinite loop
-            if (!this.state.post || (this.state.post && this.state.post.id !== this.props.id)) {
+            if (!this.state.post || (this.state.post && this.state.post.id !== this.props.match.params.id)) {
                 try {
-                    const response = await fetch(`http://jsonplaceholder.typicode.com/posts/${this.props.id}`);
+                    const response = await fetch(`http://jsonplaceholder.typicode.com/posts/${this.props.match.params.id}`);
                     const post = await response.json();
                     this.setState({post});
                 } catch (e) {
